@@ -1,263 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Multi-File Code Editor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VS Code Web Editor</title>
 
-  <!-- CodeMirror CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/codemirror.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/theme/material-darker.min.css" />
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/theme/material-darker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/mode/css/css.min.js"></script>
 
-  <!-- CodeMirror JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/codemirror.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/mode/htmlmixed/htmlmixed.min.js"></script>
+    <!-- Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-    }
-    
-    body {
-      display: flex;
-      height: 100vh;
-      background: #1e1e1e;
-      color: white;
-    }
-
-    /* Sidebar for file navigation */
-    .sidebar {
-      width: 250px;
-      background: #252526;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      border-right: 2px solid #333;
-    }
-
-    .sidebar h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .file-actions {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .file-actions button {
-      flex: 1;
-      padding: 8px;
-      background: #3a3a3a;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-      color: white;
-      transition: 0.3s;
-    }
-
-    .file-actions button:hover {
-      background: #555;
-    }
-
-    .file-list {
-      flex-grow: 1;
-      overflow-y: auto;
-    }
-
-    .file-list li {
-      padding: 8px;
-      margin-bottom: 5px;
-      cursor: pointer;
-      border-radius: 4px;
-      background: #333;
-      transition: 0.3s;
-    }
-
-    .file-list li.active, .file-list li:hover {
-      background: #007ACC;
-    }
-
-    /* Editor & Preview */
-    .main-content {
-      flex: 1;
-      display: flex;
-    }
-
-    .editor-container {
-      width: 50%;
-      display: flex;
-      flex-direction: column;
-      background: #1e1e1e;
-      padding: 20px;
-    }
-
-    .editor-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #333;
-    }
-
-    .editor-header span {
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .buttons button {
-      padding: 10px;
-      background: #4CAF50;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      border-radius: 4px;
-      color: white;
-      transition: 0.3s;
-    }
-
-    .buttons .btn-window {
-      background: #008CBA;
-    }
-
-    .buttons button:hover {
-      opacity: 0.8;
-    }
-
-    /* CodeMirror */
-    .CodeMirror {
-      flex: 1;
-      height: calc(100vh - 120px);
-      border: 1px solid #333;
-      border-radius: 5px;
-      font-size: 14px;
-    }
-
-    /* Preview Window */
-    .preview-container {
-      width: 50%;
-      padding: 20px;
-      background: #2e2e2e;
-      display: flex;
-      flex-direction: column;
-    }
-
-    iframe {
-      flex: 1;
-      width: 100%;
-      border: none;
-      background: white;
-      border-radius: 5px;
-    }
-  </style>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            display: flex;
+            height: 100vh;
+            background: #1e1e1e;
+            color: white;
+        }
+        .sidebar {
+            width: 250px;
+            background: #252526;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #333;
+        }
+        .sidebar h2 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .file-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            list-style: none;
+        }
+        .file-list li {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.3s;
+            gap: 10px;
+        }
+        .file-list li i {
+            font-size: 16px;
+        }
+        .file-list li:hover, .file-list li.active {
+            background: #007ACC;
+        }
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 10px;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .buttons button {
+            padding: 8px 12px;
+            background: #4CAF50;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            color: white;
+            transition: 0.3s;
+        }
+        .buttons .btn-window {
+            background: #008CBA;
+        }
+        .CodeMirror {
+            flex: 1;
+            height: calc(100vh - 100px);
+            border: 1px solid #333;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .preview-container {
+            width: 50%;
+            padding: 15px;
+            background: #2e2e2e;
+            display: flex;
+            flex-direction: column;
+        }
+        iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: white;
+            border-radius: 5px;
+        }
+        .context-menu {
+            position: absolute;
+            background: #333;
+            border-radius: 5px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+        }
+        .context-menu button {
+            background: none;
+            color: white;
+            border: none;
+            padding: 8px;
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+        }
+        .context-menu button:hover {
+            background: #555;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Sidebar for File Navigation -->
-  <div class="sidebar">
-    <h2>📂 Files</h2>
-    <div class="file-actions">
-      <button onclick="newFile()">➕ New</button>
-      <button onclick="renameFile()">✏️ Rename</button>
+    <div class="sidebar">
+        <h2>📂 Files</h2>
+        <input type="file" id="importFile" multiple>
+        <ul id="fileList" class="file-list"></ul>
     </div>
-    <ul id="fileList" class="file-list"></ul>
-  </div>
 
-  <!-- Main Content (Editor + Preview) -->
-  <div class="main-content">
-    <div class="editor-container">
-      <div class="editor-header">
-        <span>📝 Editing: <strong id="fileName">index.html</strong></span>
-        <div class="buttons">
-          <button class="btn-run" onclick="runCode()">▶ Run</button>
-          <button class="btn-window" onclick="openInNewWindow()">🖥 Open</button>
+    <div class="main-content">
+        <div class="editor-container">
+            <div class="editor-header">
+                <span>📝 Editing: <strong id="fileName">index.html</strong></span>
+                <div class="buttons">
+                    <button class="btn-run" onclick="runCode()">▶ Run</button>
+                    <button class="btn-window" onclick="openInNewWindow()">🖥 Open</button>
+                </div>
+            </div>
+            <textarea id="codeEditor"></textarea>
         </div>
-      </div>
-      <textarea id="codeEditor"></textarea>
+
+        <div class="preview-container">
+            <iframe id="output"></iframe>
+        </div>
     </div>
 
-    <div class="preview-container">
-      <iframe id="output"></iframe>
+    <div class="context-menu" id="contextMenu">
+        <button onclick="renameFile()">✏️ Rename</button>
+        <button onclick="deleteFile()">🗑 Delete</button>
+        <button onclick="runCode()">▶ Run</button>
     </div>
-  </div>
 
-  <script>
-    let files = { "index.html": "<h1>Welcome!</h1><p>Edit and run your HTML here.</p>" };
-    let currentFile = "index.html";
+    <script>
+        let files = {
+            "index.html": `<h1>Home Page</h1><button onclick="location.href='button.html'">Go to Button Page</button>`,
+            "button.html": `<h1>Button Page</h1><button onclick="location.href='index.html'">Go Back</button>`
+        };
+        let currentFile = "index.html";
 
-    const editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
-      mode: "htmlmixed",
-      lineNumbers: true,
-      theme: "material-darker",
-      indentWithTabs: true,
-      smartIndent: true,
-      lineWrapping: true
-    });
+        const editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
+            mode: "htmlmixed",
+            lineNumbers: true,
+            theme: "material-darker",
+            indentWithTabs: true,
+            smartIndent: true,
+            lineWrapping: true
+        });
 
-    function updateFileList() {
-      const fileList = document.getElementById("fileList");
-      fileList.innerHTML = "";
-      for (let file in files) {
-        const li = document.createElement("li");
-        li.textContent = file;
-        if (file === currentFile) li.classList.add("active");
-        li.onclick = () => selectFile(file);
-        fileList.appendChild(li);
-      }
-    }
+        function updateFileList() {
+            const fileList = document.getElementById("fileList");
+            fileList.innerHTML = "";
+            for (let file in files) {
+                const li = document.createElement("li");
+                li.innerHTML = `<i class="far fa-file-code"></i> ${file}`;
+                li.onclick = () => selectFile(file);
+                li.oncontextmenu = (e) => showContextMenu(e, file);
+                fileList.appendChild(li);
+            }
+        }
 
-    function selectFile(fileName) {
-      files[currentFile] = editor.getValue();
-      currentFile = fileName;
-      document.getElementById("fileName").textContent = fileName;
-      editor.setValue(files[currentFile]);
-      updateFileList();
-    }
+        function selectFile(fileName) {
+            files[currentFile] = editor.getValue();
+            currentFile = fileName;
+            document.getElementById("fileName").textContent = fileName;
+            editor.setValue(files[currentFile]);
+            updateFileList();
+        }
 
-    function newFile() {
-      let fileName = prompt("Enter new file name:", "newfile.html");
-      if (!fileName || files[fileName]) return;
-      files[fileName] = "<h1>" + fileName + "</h1><p>New file content...</p>";
-      updateFileList();
-      selectFile(fileName);
-    }
+        function runCode() {
+            const iframe = document.getElementById("output").contentWindow.document;
+            iframe.open();
+            iframe.write(files[currentFile]);
+            iframe.close();
+        }
 
-    function renameFile() {
-      let newName = prompt("Rename file:", currentFile);
-      if (!newName || files[newName]) return;
-      files[newName] = files[currentFile];
-      delete files[currentFile];
-      currentFile = newName;
-      updateFileList();
-      selectFile(newName);
-    }
+        function openInNewWindow() {
+            const win = window.open("", "_blank");
+            win.document.open();
+            win.document.write(files[currentFile]);
+            win.document.close();
+        }
 
-    function runCode() {
-      const code = files[currentFile];
-      const iframe = document.getElementById("output").contentWindow.document;
-      iframe.open();
-      iframe.write(code);
-      iframe.close();
-    }
+        function showContextMenu(event, file) {
+            event.preventDefault();
+            const menu = document.getElementById("contextMenu");
+            menu.style.left = `${event.pageX}px`;
+            menu.style.top = `${event.pageY}px`;
+            menu.style.display = "flex";
+            currentFile = file;
+        }
 
-    function openInNewWindow() {
-      const win = window.open("", "_blank", "width=800,height=600");
-      win.document.open();
-      win.document.write(files[currentFile]);
-      win.document.close();
-    }
+        document.onclick = () => document.getElementById("contextMenu").style.display = "none";
 
-    window.onload = () => { editor.setValue(files[currentFile]); updateFileList(); };
-  </script>
+        window.onload = () => { editor.setValue(files[currentFile]); updateFileList(); };
+    </script>
 
 </body>
 </html>
